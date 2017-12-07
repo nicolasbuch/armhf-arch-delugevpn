@@ -3,40 +3,16 @@
 # exit script if return code != 0
 set -e
 
-# custom scripts
-####
-
-# call custom install script
-source /root/custom.sh
-
 # pacman packages
 ####
 
 # define pacman packages
-pacman_packages="pygtk python2-service-identity python2-mako python2-notify gnu-netcat ipcalc"
+pacman_packages="pygtk python2-service-identity python2-mako python2-notify gnu-netcat ipcalc deluge"
 
 # install compiled packages using pacman
 if [[ ! -z "${pacman_packages}" ]]; then
 	pacman -S --needed $pacman_packages --noconfirm
 fi
-
-# aor packages
-####
-
-# define arch official repo (aor) packages
-aor_packages="deluge"
-
-# call aor script (arch official repo)
-source /root/aor.sh
-
-# aur packages
-####
-
-# define aur packages
-aur_packages=""
-
-# call aur install script (arch user repo)
-source /root/aur.sh
 
 # container perms
 ####
