@@ -62,3 +62,8 @@ EXPOSE 58946/udp
 
 # run script to set uid, gid and permissions
 CMD ["/bin/bash", "/root/init.sh"]
+
+# healthcheck
+#############
+HEALTHCHECK \
+	CMD curl -f http://localhost:8112/ || exit 1
