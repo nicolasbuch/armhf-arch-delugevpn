@@ -17,7 +17,7 @@ done
 for mkv_path in $(find $full_path -type f -name '*.mkv' | grep -v 'sample')
 do
     # Remux with ffmpeg
-    ffmpeg -i $mkv_path -metadata title="" -acodec ac3 -b:a 640k $tmp_output_ffmpeg_path
+    ffmpeg -i $mkv_path -metadata title="" -vcodec copy -acodec ac3 -b:a 640k $tmp_output_ffmpeg_path
 done
 
 # Copy all subtitles to tmp dir
