@@ -57,6 +57,16 @@ EXPOSE 58846
 EXPOSE 58946
 EXPOSE 58946/udp
 
+# install filebot
+#################
+
+RUN mkdir -p /tmp/Package/ && chown nobody /tmp/Package
+USER nobody
+RUN cd /tmp/Package && curl https://aur.archlinux.org/cgit/aur.git/snapshot/filebot.tar.gz -o filebot.tar.gz && tar -xvzf filebot.tar.gz && cd filebot && makepkg -s --clean
+
+USER root
+RUN pacman -U --noconfirm /tmp/Package/filebot/filebot-*-armv7h.pkg.tar.xz
+
 # set permissions
 #################
 
