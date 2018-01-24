@@ -3,9 +3,9 @@ torrent_id=$1
 torrent_name=$2
 torrent_dir=$3
 full_path="${torrent_dir}/${torrent_name}"
-tmp_output_dir="/mnt/286a017f-d80e-4041-8c5b-df787720eceb/tmp/$torrent_name"
+tmp_output_dir="/storage/tmp/$torrent_name"
 tmp_output_ffmpeg_path="$tmp_output_dir/$torrent_name.mp4"
-final_output_dir="/mnt/286a017f-d80e-4041-8c5b-df787720eceb/movies"
+final_output_dir="/storage/movies"
 
 # Loop through all rar files and extract them
 for file in $(find $full_path -type f -name '*.rar')
