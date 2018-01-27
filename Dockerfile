@@ -72,8 +72,3 @@ RUN pacman -U --noconfirm /tmp/Package/filebot/filebot-*-armv7h.pkg.tar.xz
 
 # run script to set uid, gid and permissions
 CMD ["/bin/bash", "/root/init.sh"]
-
-# healthcheck
-#############
-HEALTHCHECK \
-	CMD curl -f http://localhost:8112/ || exit 1
