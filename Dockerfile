@@ -22,6 +22,9 @@ ADD run/nobody/*.py /home/nobody/
 # add pre-configured config files for deluge
 ADD config/nobody/ /home/nobody/
 
+# add modified makepkg file which does not check for root user
+ADD config/makepkg /usr/bin/
+
 # install app
 #############
 
@@ -57,15 +60,25 @@ EXPOSE 58846
 EXPOSE 58946
 EXPOSE 58946/udp
 
-# install filebot
+# install jdk8 and filebot
 #################
+RUN mkdir -p /tmp/package/ && chown nobody /tmp/package
 
-RUN mkdir -p /tmp/Package/ && chown nobody /tmp/Package
-USER nobody
-RUN cd /tmp/Package && curl https://aur.archlinux.org/cgit/aur.git/snapshot/filebot.tar.gz -o filebot.tar.gz && tar -xvzf filebot.tar.gz && cd filebot && makepkg -s --clean
+RUN cd /tmp/package && \
+    curl https://aur.archlinux.org/cgit/aur.git/snapshot/jdk-arm.tar.gz -o jdk8.tar.gz && \
+    tar -xvzf jdk8.tar.gz && \
+    cd jdk-arm && \
+    makepkg -s --noconfirm --clean
 
-USER root
-RUN pacman -U --noconfirm /tmp/Package/filebot/filebot-*-armv7h.pkg.tar.xz
+RUN pacman -U --noconfirm /tmp/package/jdk-arm/*.tar.xz
+
+RUN cd /tmp/package && \
+    curl https://aur.archlinux.org/cgit/aur.git/snapshot/filebot.tar.gz -o filebot.tar.gz && \
+    tar -xvzf filebot.tar.gz && \
+    cd filebot && \
+    makepkg -s --noconfirm --clean
+
+RUN pacman -U --noconfirm /tmp/package/filebot/filebot-*-armv7h.pkg.tar.xz
 
 # set permissions
 #################
