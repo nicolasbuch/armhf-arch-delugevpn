@@ -17,7 +17,7 @@ log_file="/data/process-download.log"
 #
 ############################################
 
-notify () {
+log () {
     message=$1
     level=$2
 
@@ -28,7 +28,7 @@ notify () {
 }
 
 
-notify "Processing download $torrent_name"
+log "Processing download $torrent_name"
 
 # Create temporary directory structure
 mkdir -p $tmp_output_dir
@@ -44,9 +44,9 @@ for file in $(find $full_path -type f -name '*.rar')
 do
     filename=$(basename $file)
 
-    notify "Extracting $filename..."
+    log "Extracting $filename..."
     unrar e -y $file
-    notify "Finished extracting $filename..."
+    log "Finished extracting $filename..."
 
 done
 
@@ -88,10 +88,10 @@ do
             continue
         fi
 
-        # If the codec type is null, then notify and continue
+        # If the codec type is null, then log and continue
         if [ $(_jq '.tags.language') == null ]
             then
-            notify "Subtitle track does not have a language. Skipping..." "warn"
+            log "Subtitle track does not have a language. Skipping..." "warn"
             continue
         fi
 
@@ -101,13 +101,13 @@ do
         language=$(_jq '.tags.language')
         tmp_srt_stream_output_path="$tmp_output_dir/$mkv_filename.$language.srt"
 
-        notify "Extracting $language subtitle..."
+        log "Extracting $language subtitle..."
 
         # Extract subtitle with ffmpeg into tmp output dir
         # TODO: Slow approach to extract subtitle due to it "transcoding"? Any copy commands?
         ffmpeg -y -i $mkv_path -map 0:$index $tmp_srt_stream_output_path 2>> $log_file
 
-        notify "Finished extracting subtitle to $tmp_srt_stream_output_path"
+        log "Finished extracting subtitle to $tmp_srt_stream_output_path"
 
     done
 
@@ -119,7 +119,7 @@ do
     #
     ############################################
 
-    notify "Looking for external subtitles to copy..."
+    log "Looking for external subtitles to copy..."
 
     # Find all files with .srt extension
     srt_files=$(find $mkv_dir -type f -name '*.srt')
@@ -129,9 +129,9 @@ do
             # Get the count of .srt files found
             srt_files_count=$(find $mkv_dir -type f -name '*.srt' | wc -l)
 
-            notify "Found [$srt_files_count] .srt files"
+            log "Found [$srt_files_count] .srt files"
         else
-            notify "No .srt files found. Skipping..."
+            log "No .srt files found. Skipping..."
     fi
 
     # Loop through the found subtitles
@@ -146,14 +146,14 @@ do
         # Check for subtitle naming convention DA.srt, DE.srt e.t.c. since filebot will see them as orphaned
         if [ filename_lenght == 2 ]
         then
-            notify "Subtitle naming convention is not compatible with filebot"
-            notify "Copying && renaming $sub_filename_full to $mkv_filename.$sub_filename_full..."
+            log "Subtitle naming convention is not compatible with filebot"
+            log "Copying && renaming $sub_filename_full to $mkv_filename.$sub_filename_full..."
             cp $sub "$tmp_output_dir/$mkv_filename.$sub_filename_full"
-            notify "Finished copying $sub_filename_full"
+            log "Finished copying $sub_filename_full"
         else
-            notify "Copying $sub_filename_full..."
+            log "Copying $sub_filename_full..."
             cp $sub $tmp_output_dir
-            notify "Finished copying $sub_filename_full"
+            log "Finished copying $sub_filename_full"
         fi
     done
 
@@ -172,27 +172,27 @@ do
     # Determine the audio codec of video file
     audio_codec=$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of default=noprint_wrappers=1:nokey=1 $mkv_path)
 
-    notify "Processing $mkv_path";
-    notify "Audio codec $audio_codec detected"
+    log "Processing $mkv_path";
+    log "Audio codec $audio_codec detected"
 
     if [ "$audio_codec" == "ac3" ];
         then
-            notify "Initiate copy of video and audio to .mp4 container"
-            notify "Copying..."
+            log "Initiate copy of video and audio to .mp4 container"
+            log "Copying..."
 
             # Remux to mp4 container
             ffmpeg -y -i $mkv_path -metadata title="" -vcodec copy -acodec copy $tmp_output_path 2>> $log_file
 
-            notify "Finished copying to $tmp_output_path"
+            log "Finished copying to $tmp_output_path"
         else
-            notify "Transcoding of audio is needed"
-            notify "Initiate copy of video and transcoding of audio to mp4 container"
-            notify "Copying & transcoding..."
+            log "Transcoding of audio is needed"
+            log "Initiate copy of video and transcoding of audio to mp4 container"
+            log "Copying & transcoding..."
 
             # Copy and transcode to .mp4 container
             ffmpeg -y -i $mkv_path -metadata title="" -vcodec copy -acodec ac3 -b:a 640k $tmp_output_path 2>> $log_file
 
-            notify "Finished copying & transcoding $tmp_output_path"
+            log "Finished copying & transcoding $tmp_output_path"
     fi
 done
 
@@ -205,11 +205,11 @@ done
 #
 ############################################
 
-notify "Initiating renaming of files"
-notify "Renaming..."
+log "Initiating renaming of files"
+log "Renaming..."
 
 # Rename files/folders and move them to movies folder
 filebot -script fn:amc --output "$final_output_dir" --action move --conflict skip -non-strict --log-file "$log_file" --def unsorted=y plex=192.168.1.100:mx93Mzy4MLYSMVC9TZq7 excludeList=".excludes" ut_dir="$tmp_output_dir" ut_kind="multi" ut_title="$torrent_name" ut_label=""
 
-notify "Finished renaming"
-notify "Finished processing download $torrent_name"
+log "Finished renaming"
+log "Finished processing download $torrent_name"
