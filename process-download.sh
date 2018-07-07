@@ -9,7 +9,7 @@ log_file="/data/process-download.log"
 
 ############################################
 #
-#   Function which handles notifications
+#   Function which handles logging
 #
 #   Params:
 #   string $message
