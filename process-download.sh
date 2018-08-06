@@ -2,10 +2,14 @@
 torrent_id=$1
 torrent_name=$2
 torrent_dir=$3
+
 full_path="${torrent_dir}/${torrent_name}"
 tmp_output_dir="/mnt/storage/tmp/$torrent_name"
 final_output_dir="/mnt/storage"
 log_file="/data/process-download.log"
+
+notify=true
+notification_driver=slack
 
 ############################################
 #
@@ -27,8 +31,35 @@ log () {
     echo "[$level] $message" >> $log_file
 }
 
+############################################
+#
+#   Function which handles notifications
+#
+#   Params:
+#   string $message
+#
+############################################
 
-log "Processing download $torrent_name"
+notify () {
+    message=$1
+
+    if [ $notify = true ] ; then
+
+        case $notification_driver in
+            slack)
+                slackpost $message
+                ;;
+            *)
+                log "Unknown or no notification_driver set"
+                exit 1
+        esac
+    fi
+
+    log $message
+}
+
+
+notify "Processing download $torrent_name"
 
 # Create temporary directory structure
 mkdir -p $tmp_output_dir
@@ -212,4 +243,4 @@ log "Renaming..."
 filebot -script fn:amc --output "$final_output_dir" --action move --conflict skip -non-strict --log-file "$log_file" --def unsorted=y plex=192.168.1.100:mx93Mzy4MLYSMVC9TZq7 excludeList=".excludes" ut_dir="$tmp_output_dir" ut_kind="multi" ut_title="$torrent_name" ut_label=""
 
 log "Finished renaming"
-log "Finished processing download $torrent_name"
+notify "Finished processing download $torrent_name"

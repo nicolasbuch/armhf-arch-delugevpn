@@ -73,12 +73,14 @@ RUN cd /tmp/package && \
 RUN pacman -U --noconfirm /tmp/package/jdk-arm/*.tar.xz
 
 RUN cd /tmp/package && \
-    curl https://aur.archlinux.org/cgit/aur.git/snapshot/filebot.tar.gz -o filebot.tar.gz && \
+    curl https://aur.archlinux.org/cgit/aur.git/snapshot/filebot47.tar.gz -o filebot.tar.gz && \
     tar -xvzf filebot.tar.gz && \
-    cd filebot && \
+    cd filebot47 && \
     makepkg -s --noconfirm --clean
 
-RUN pacman -U --noconfirm /tmp/package/filebot/filebot-*-armv7h.pkg.tar.xz
+RUN pacman -U --noconfirm /tmp/package/filebot47/*pkg.tar.xz
+
+COPY slackpost.sh /usr/bin/slackpost
 
 # set permissions
 #################
