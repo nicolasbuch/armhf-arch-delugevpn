@@ -7,7 +7,7 @@ set -e
 ####
 
 # define pacman packages
-pacman_packages="pygtk python2-service-identity python2-mako python2-notify gnu-netcat ipcalc deluge binutils fakeroot chromaprint git"
+pacman_packages="pygtk python2-service-identity python2-mako python2-notify gnu-netcat ipcalc deluge binutils fakeroot chromaprint glibc"
 
 # install compiled packages using pacman
 if [[ ! -z "${pacman_packages}" ]]; then
