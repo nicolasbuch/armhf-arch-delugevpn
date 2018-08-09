@@ -47,7 +47,7 @@ notify () {
 
         case $notification_driver in
             slack)
-                slackpost $message
+                slackpost "$message"
                 ;;
             *)
                 log "Unknown or no notification_driver set"
@@ -55,7 +55,7 @@ notify () {
         esac
     fi
 
-    log $message
+    log "$message"
 }
 
 
