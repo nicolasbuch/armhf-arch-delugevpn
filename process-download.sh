@@ -6,10 +6,13 @@ torrent_dir=$3
 full_path="${torrent_dir}/${torrent_name}"
 tmp_output_dir="/mnt/storage/tmp/$torrent_name"
 final_output_dir="/mnt/storage"
-log_file="/data/process-download.log"
+log_folder="/mnt/storage/logs"
+log_file="$log_folder/$torrent_name.log"
 
 notify=true
 notification_driver=slack
+
+wanted_languages=(en da dan)
 
 ############################################
 #
@@ -131,6 +134,13 @@ do
         codec_name=$(_jq '.codec_name')
         language=$(_jq '.tags.language')
         tmp_srt_stream_output_path="$tmp_output_dir/$mkv_filename.$language.srt"
+
+        # If the subtitle is not in our wanted languages, then continue
+        if [[ ! " ${wanted_languages[@]} " =~ " ${language} " ]]
+            then
+            log "Skipping $language subtitle..."
+            continue
+        fi
 
         log "Extracting $language subtitle..."
 
