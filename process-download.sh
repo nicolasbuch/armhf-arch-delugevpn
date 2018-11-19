@@ -7,7 +7,7 @@ full_path="${torrent_dir}/${torrent_name}"
 tmp_output_dir="/mnt/storage/tmp/$torrent_name"
 final_output_dir="/mnt/storage"
 log_folder="/mnt/storage/logs"
-log_file="$log_folder/$torrent_name.log"
+log_file="$log_folder/$(date +"%F")_$torrent_name.log"
 
 notify=true
 notification_driver=slack
