@@ -14,6 +14,9 @@ notification_driver=slack
 
 wanted_languages=(en da dan)
 
+# Makes sure that spaces are handled correctly in for loops
+IFS=$'\n'
+
 ############################################
 #
 #   Function which handles logging
