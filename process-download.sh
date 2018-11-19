@@ -253,7 +253,7 @@ log "Initiating renaming of files"
 log "Renaming..."
 
 # Rename files/folders and move them to movies folder
-filebot -script fn:amc --output "$final_output_dir" --action move --conflict skip -non-strict --log-file "$log_file" --def unsorted=y plex=192.168.1.100:mx93Mzy4MLYSMVC9TZq7 excludeList=".excludes" ut_dir="$tmp_output_dir" ut_kind="multi" ut_title="$torrent_name" ut_label=""
+filebot -script fn:amc --output "$final_output_dir" --action move --conflict override -non-strict --log-file "$log_file" --def unsorted=y plex=192.168.1.100:mx93Mzy4MLYSMVC9TZq7 excludeList=".excludes" ut_dir="$tmp_output_dir" ut_kind="multi" ut_title="$torrent_name" ut_label=""
 
 log "Finished renaming"
 notify "Finished processing download $torrent_name"
