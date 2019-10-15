@@ -71,23 +71,8 @@ notify "Processing download $torrent_name"
 # Create temporary directory structure
 mkdir -p $tmp_output_dir
 
-
-############################################
-#
-#   Handle extraction of .rar files
-#
-############################################
-
-for file in $(find $full_path -type f -name '*.rar')
-do
-    filename=$(basename $file)
-
-    log "Extracting $filename..."
-    unrar e -y $file
-    log "Finished extracting $filename..."
-
-done
-
+# Run unrar script
+source /data/unrar.sh "$full_path" &>> "$log_file"
 
 # Convert all .mkv video files which are not named "sample" to mp4 with AC3 audio
 for mkv_path in $(find $full_path -type f -name '*.mkv' | grep -i -v 'sample')
