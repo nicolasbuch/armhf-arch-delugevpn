@@ -64,7 +64,8 @@ notify () {
     log "$message"
 }
 
-
+# Output the script and arguments used for debugging purposes
+log "${0} $1 $2 $3" "debug"
 notify "Processing download $torrent_name"
 
 # Create temporary directory structure
