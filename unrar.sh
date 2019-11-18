@@ -4,15 +4,13 @@ full_path=$1
 ############################################
 #
 #   Handle extraction of .rar files
-#     DEPENDENCIES:
-#       - log function
 #     REQUIREMENTS:
 #       - Need to be able to handle extraction of .rar files partitioned into .r01 -> .r99 files
 #       - Need to be able to handle extraction of part001.rar -> part999.rar files
 #
 ####################################
 
-found_rar_files=$(find $full_path -type f -name '*.rar')
+found_rar_files=$(find $full_path -maxdepth 1 -type f -name '*.rar')
 
 if [ ! -z "$found_rar_files" ]
 then
@@ -22,7 +20,7 @@ then
       filename=$(basename $file)
 
       echo "Extracting $filename..."
-      unrar e -y $file
+      unrar e -y $file $full_path
       echo "Finished extracting $filename..."
 
   done
